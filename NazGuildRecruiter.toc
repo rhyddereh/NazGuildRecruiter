@@ -1,0 +1,26 @@
+## Title: |cff50a80eNazgul Guild Recruiter|r
+## Notes: For all your recruitment spamming needs!
+## Author: Rodrick
+## X-eMail: d DOT mangus AT gmail DOT com
+## X-Website: http://guild.requiemtech.com/
+
+## Interface: 20400
+## Version: 1.5
+## X-Build: $Revision$
+
+## DefaultState: enabled
+## LoadOnDemand: 0
+## SavedVariables: NazGuildRecruiterDB
+## SavedVariablesPerCharacter: NazGuildRecruiterDBPC
+## OptionalDeps: Ace2, RollCall-1.0, LibBabbleDewdropLib, LibBabble-Zone-3.0
+## X-Embeds: Ace2, RollCall-1.0, TouristLib, DewdropLib, LibBabble-Zone-3.0
+## X-Category: Guild
+## X-License: GPL v2 or later
+## LoadManagers: AddonLoader
+## X-LoadOn-Guild: true
+## X-LoadOn-Slash: /NazGuildRecruiter, /ngr
+
+embeds.xml
+locales\locales.xml
+
+Core.lua
