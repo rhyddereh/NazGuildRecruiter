@@ -23,4 +23,5 @@
 embeds.xml
 locales\locales.xml
 
+Zones.lua
 Core.lua
