@@ -2,9 +2,12 @@
 	NazGuildRecruiter Core addon
 	
 	TODO:  Respond with a WHISPER to a "who's online, are you enabled, and what guild are you attuned to?"  Preferrably even if disabled, this will help guild leaders test it for their members.
+            Add Ability_Warrior_RallyingCry as the LDB icon
+            Ace2 -> Ace3/LibStub
+            Remove need for RollCall
 ------------------------------------------------------------------------------------]]
 
-local L = AceLibrary("AceLocale-2.2"):new("NazGuildRecruiter")
+local L = LibStub("AceLocale-3.0"):GetLocale("NazGuildRecruiter")
 local ZBZ = LibStub("LibBabble-Zone-3.0")
 local Z = ZBZ:GetLookupTable()
 local ZR = ZBZ:GetReverseLookupTable()
