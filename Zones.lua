@@ -293,17 +293,17 @@ NGR_Zones[Z["Zul'Drak"]] = {
 }
 
 NGR_Zones[Z["Sholazar Basin"]] = {
-    low = 76,
+    low = 75,
     high = 78,
 }
 
 NGR_Zones[Z["Crystalsong Forest"]] = {
-    low = 77,
-    high = 80,
+    low = 74,
+    high = 76,
 }
 
 NGR_Zones[Z["Storm Peaks"]] = {
-    low = 77,
+    low = 76,
     high = 80,
 }
 
