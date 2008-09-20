@@ -1,3 +1,6 @@
+local ZBZ = LibStub("LibBabble-Zone-3.0")
+local Z = ZBZ:GetLookupTable()
+
 --Eastern Kingdoms
 NGR_Zones[Z["Elwynn Forest"]] = {
     low = 1,
@@ -302,7 +305,7 @@ NGR_Zones[Z["Crystalsong Forest"]] = {
     high = 76,
 }
 
-NGR_Zones[Z["Storm Peaks"]] = {
+NGR_Zones[Z["The Storm Peaks"]] = {
     low = 76,
     high = 80,
 }

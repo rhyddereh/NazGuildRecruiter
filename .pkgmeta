@@ -5,11 +5,15 @@ externals:
    libs/AceOO-2.0: http://svn.wowace.com/wowace/trunk/Ace2/AceOO-2.0
    libs/AceLibrary: http://svn.wowace.com/wowace/trunk/Ace2/AceLibrary
    libs/AceAddon-2.0: http://svn.wowace.com/wowace/trunk/Ace2/AceAddon-2.0
-   libs/AceDB-2.0: http://svn.wowace.com/wowace/trunk/Ace2/AceDB-2.0
    libs/AceConsole-2.0: http://svn.wowace.com/wowace/trunk/Ace2/AceConsole-2.0
    libs/AceEvent-2.0: http://svn.wowace.com/wowace/trunk/Ace2/AceEvent-2.0
    libs/RollCall-1.0/RollCall-1.0: http://svn.wowace.com/wowace/trunk/RollCall-1.0/RollCall-1.0
    libs/Dewdrop-2.0: http://svn.wowace.com/wowace/trunk/DewdropLib/Dewdrop-2.0
    
+   libs/AceDB-3.0: http://svn.wowace.com/wowace/trunk/Ace3/AceDB-3.0
+   libs/AceDBOptions-3.0: http://svn.wowace.com/wowace/trunk/Ace3/AceDBOptions-3.0
    libs/AceLocale-3.0: http://svn.wowace.com/wowace/trunk/Ace3/AceLocale-3.0
+   libs/LibStub: http://svn.wowace.com/wowace/trunk/Ace3/LibStub
+   libs/CallbackHandler-1.0: http://svn.wowace.com/wowace/trunk/Ace3/CallbackHandler-1.0
+
    libs/LibBabble-Zone-3.0: http://svn.wowace.com/wowace/trunk/LibBabble-Zone-3.0
