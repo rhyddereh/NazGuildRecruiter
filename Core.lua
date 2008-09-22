@@ -15,6 +15,7 @@ local rollcall = AceLibrary("RollCall-1.0")
 local dewdrop = AceLibrary("Dewdrop-2.0")
 
 local city = {}
+local active
 
 --[[----------------------------------------------------------------------------------
 	Notes:
@@ -75,7 +76,7 @@ local options = {
 							else
                                 currentzone = ZR[GetZoneText()]
                             end
-							NazGuildRecruiter:Print(gsub(L["The last time spammed in this zone was NUMMINUTES minutes ago"], "NUMMINUTES", tostring(tonumber(NazGuildRecruiter:GetTime()) - tonumber(NazGuildRecruiter.db.profile.lasttime[currentzone]))))
+							NazGuildRecruiter:Print(gsub(L["The last time spammed in this zone was NUMMINUTES minutes ago"], "NUMMINUTES", tostring(tonumber(NazGuildRecruiter:GetTime()) - (tonumber(NazGuildRecruiter.db.profile.lasttime[currentzone]) or 0))))
 						end,
 			order = 1,
 		},
@@ -289,6 +290,9 @@ local function CreateUIOptionsFrame(addon)  -- call from your load function, usi
   InterfaceOptions_AddCategory(panel)
 end
 
+function NazGuildRecruiter:ToggleActive(state)
+	active = state
+end
 --Reusable Functions
 
 --[[----------------------------------------------------------------------------------
@@ -667,6 +671,7 @@ end
 	* Is called every 30 seconds
 ------------------------------------------------------------------------------------]]
 function NazGuildRecruiter:Timer()
+	if not active then return end
 	if self.afkdnd then return end --if afk do nothing
 	if #(self.rctr) ~= 0 then--We have recruiters in our list who are not afk or dnd
 		local zone = GetZoneText() --Get the zonetext and save it for use throughout the function
@@ -693,6 +698,7 @@ end
 	* This is called every time you join or leave a channel
 ------------------------------------------------------------------------------------]]
 function NazGuildRecruiter:CHAT_MSG_CHANNEL_NOTICE(what, a, b, c, d, e, f, number, channel)
+	if not active then return end
 	if strsub(channel, 0, strlen(GENERAL)) == GENERAL then --changed the general channel
 		self:ScheduleEvent(function() self:Timer() end, 5) --Call the Timer even to check for spamming, etc. in 5 seconds time (otherwise it was spamming right before actually changing channel
 	elseif not self.grchannel and channel == L["GuildRecruitment"] .. " - " .. L["City"] and what == "YOU_JOINED" then --Joined the GuildRecruitment channel
@@ -733,6 +739,7 @@ end
 		*string - zone - zone we are spamming for
 ------------------------------------------------------------------------------------]]
 function NazGuildRecruiter:SpamZone(zone)
+	if not active then return end
 	if not self:Recommended() and zone ~= "City" then return end --if this isn't the right level zone do nothing
 	for s, name in pairs(NazGuildRecruiter.rctr) do --Iterate through the recruiter list and check for people who are offline
 		if rollcall:IsMemberOnline(name) then --Yes this one is online
