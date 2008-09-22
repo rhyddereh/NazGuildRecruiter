@@ -7,7 +7,7 @@ externals:
    libs/AceAddon-2.0: http://svn.wowace.com/wowace/trunk/Ace2/AceAddon-2.0
    libs/AceConsole-2.0: http://svn.wowace.com/wowace/trunk/Ace2/AceConsole-2.0
    libs/AceEvent-2.0: http://svn.wowace.com/wowace/trunk/Ace2/AceEvent-2.0
-   libs/RollCall-1.0/RollCall-1.0: http://svn.wowace.com/wowace/trunk/RollCall-1.0/RollCall-1.0
+   libs/RollCall-1.0: http://svn.wowace.com/wowace/trunk/RollCall-1.0/RollCall-1.0
    libs/Dewdrop-2.0: http://svn.wowace.com/wowace/trunk/DewdropLib/Dewdrop-2.0
    
    libs/AceDB-3.0: http://svn.wowace.com/wowace/trunk/Ace3/AceDB-3.0

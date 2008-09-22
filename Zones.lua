@@ -1,5 +1,4 @@
-local ZBZ = LibStub("LibBabble-Zone-3.0")
-local Z = ZBZ:GetLookupTable()
+NGR_Zones = {}
 
 --Eastern Kingdoms
 NGR_Zones[Z["Elwynn Forest"]] = {
