@@ -17,6 +17,8 @@ local dewdrop = AceLibrary("Dewdrop-2.0")
 local city = {}
 local active
 
+NazGuildRecruiter.IsActive = function() end
+
 --[[----------------------------------------------------------------------------------
 	Notes:
 	* Returns true if player is in city, false otherwise
@@ -194,7 +196,7 @@ local options = {
 					desc = L["The minimum level of people you are looking for (used when zonespamming so you don't spam the wrong zone)"],
 					usage = L["<minumum level>"],
 					min = 1,
-					max = 70,
+					max = 80,
 					step = 1,			
 					get = function()
 								return NazGuildRecruiter.db.profile.minlevel
@@ -214,7 +216,7 @@ local options = {
 					desc = L["The maximum level of people you are looking for (used when zonespamming so you don't spam the wrong zone)"],
 					usage = L["<maximum level>"],
 					min = 1,
-					max = 70,
+					max = 80,
 					step = 1,			
 					get = function()
 								return NazGuildRecruiter.db.profile.maxlevel
@@ -293,6 +295,11 @@ end
 function NazGuildRecruiter:ToggleActive(state)
 	active = state
 end
+
+function NazGuildRecruiter:IsActive()
+	return active
+end
+
 --Reusable Functions
 
 --[[----------------------------------------------------------------------------------
