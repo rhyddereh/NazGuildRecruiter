@@ -1,19 +1,19 @@
 package-as: NazGuildRecruiter
 
 externals:
-   libs/AceComm-2.0: http://svn.wowace.com/wowace/trunk/Ace2/AceComm-2.0
-   libs/AceOO-2.0: http://svn.wowace.com/wowace/trunk/Ace2/AceOO-2.0
-   libs/AceLibrary: http://svn.wowace.com/wowace/trunk/Ace2/AceLibrary
-   libs/AceAddon-2.0: http://svn.wowace.com/wowace/trunk/Ace2/AceAddon-2.0
-   libs/AceConsole-2.0: http://svn.wowace.com/wowace/trunk/Ace2/AceConsole-2.0
-   libs/AceEvent-2.0: http://svn.wowace.com/wowace/trunk/Ace2/AceEvent-2.0
-   libs/RollCall-1.0: http://svn.wowace.com/wowace/trunk/RollCall-1.0/RollCall-1.0
-   libs/Dewdrop-2.0: http://svn.wowace.com/wowace/trunk/DewdropLib/Dewdrop-2.0
+   libs/AceComm-2.0: svn://svn.wowace.com/wow/ace2/mainline/trunk/AceComm-2.0
+   libs/AceOO-2.0: svn://svn.wowace.com/wow/ace2/mainline/trunk/AceOO-2.0
+   libs/AceLibrary: svn://svn.wowace.com/wow/ace2/mainline/trunk/AceLibrary
+   libs/AceAddon-2.0: svn://svn.wowace.com/wow/ace2/mainline/trunk/AceAddon-2.0
+   libs/AceConsole-2.0: svn://svn.wowace.com/wow/ace2/mainline/trunk/AceConsole-2.0
+   libs/AceEvent-2.0: svn://svn.wowace.com/wow/ace2/mainline/trunk/AceEvent-2.0
+   libs/RollCall-1.0: svn://svn.wowace.com/wow/rollcall-1-0/mainline/trunk/RollCall-1.0
+   libs/Dewdrop-2.0: svn://svn.wowace.com/wow/dewdroplib/mainline/trunk/Dewdrop-2.0
    
-   libs/AceDB-3.0: http://svn.wowace.com/wowace/trunk/Ace3/AceDB-3.0
-   libs/AceDBOptions-3.0: http://svn.wowace.com/wowace/trunk/Ace3/AceDBOptions-3.0
-   libs/AceLocale-3.0: http://svn.wowace.com/wowace/trunk/Ace3/AceLocale-3.0
-   libs/LibStub: http://svn.wowace.com/wowace/trunk/Ace3/LibStub
-   libs/CallbackHandler-1.0: http://svn.wowace.com/wowace/trunk/Ace3/CallbackHandler-1.0
+   libs/AceDB-3.0: svn://svn.wowace.com/wow/ace3/mainline/trunk/AceDB-3.0
+   libs/AceDBOptions-3.0: svn://svn.wowace.com/wow/ace3/mainline/trunk/AceDBOptions-3.0
+   libs/AceLocale-3.0: svn://svn.wowace.com/wow/ace3/mainline/trunk/AceLocale-3.0
+   libs/LibStub: svn://svn.wowace.com/wow/libstub/mainline/tags/1.0
+   libs/CallbackHandler-1.0: svn://svn.wowace.com/wow/callbackhandler/mainline/tags/1.0.3/CallbackHandler-1.0
 
-   libs/LibBabble-Zone-3.0: http://svn.wowace.com/wowace/trunk/LibBabble-Zone-3.0
+   libs/LibBabble-Zone-3.0: svn://svn.wowace.com/wow/libbabble-zone-3-0/mainline/tags/WoW-3.0-release

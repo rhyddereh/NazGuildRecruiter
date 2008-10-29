@@ -4,9 +4,8 @@
 ## X-eMail: d DOT mangus AT gmail DOT com
 ## X-Website: http://guild.requiemtech.com/
 
-## Interface: 20400
-## Version: 1.5
-## X-Build: $Revision$
+## Interface: 30000
+## Version: @project-version@
 
 ## DefaultState: enabled
 ## LoadOnDemand: 0
@@ -20,7 +19,10 @@
 ## X-LoadOn-Guild: true
 ## X-LoadOn-Slash: /NazGuildRecruiter, /ngr
 
+#@no-lib-strip@
 embeds.xml
+#@end-no-lib-strip@
+
 locales\locales.xml
 
 Zones.lua
