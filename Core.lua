@@ -17,8 +17,6 @@ local dewdrop = AceLibrary("Dewdrop-2.0")
 local city = {}
 local active
 
-NazGuildRecruiter.IsActive = function() end
-
 --[[----------------------------------------------------------------------------------
 	Notes:
 	* Returns true if player is in city, false otherwise
