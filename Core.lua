@@ -436,23 +436,9 @@ end
 	* string - timestamp
 ------------------------------------------------------------------------------------]]
 function NazGuildRecruiter:GetTime()
-	local localOffset
-	local loc = tonumber(date("%H"))
-	local utc = tonumber(date("!%H"))
-	localOffset = loc - utc
-	if localOffset >= 12 then
-		localOffset = localOffset - 24
-	elseif localOffset < -12 then
-		localOffset = localOffset + 24
-	end
-	local serverHour, serverMinute = GetGameTime()
-	local Lyday = tonumber(date("%j"))
-	if localOffset + utc > 24 then
-		Lyday = Lyday - 1
-	elseif localOffset + utc < 0 then
-		Lyday = Lyday + 1
-	end
-	return (Lyday*1440)+(serverHour*60)+(serverMinute)
+	local hours,minutes = GetGameTime()
+	local _, m, d, y = CalendarGetDate()
+	return ((d + math.floor( ( 153*m - 457 ) / 5 ) + 365*y + math.floor( y / 4 ) - math.floor( y / 100 ) + math.floor( y / 400 ) + 1721118.5) * 1440) +(hours*60)+(minutes)
 end
 
 --Setup functions
@@ -481,6 +467,10 @@ function NazGuildRecruiter:OnInitialize()
 	if not self.version then self.version = tonumber(GetAddOnMetadata("NazGuildRecruiter", "Version")) end --pull version from toc
 	if not self.revision then self.revision = tonumber(GetAddOnMetadata("NazGuildRecruiter", "Revision")) end --pull revision from toc
     CreateUIOptionsFrame('NazGuildRecruiter')
+	if (self.db.profile.version ~= self.version) then --was this data not written with this version in mind?
+		self.db.profile.lasttime = {} --guess it was for the old version, reset the data then since the timestamps have changed
+		self.db.profile.version = self.version --record the version so it'll pass the next check
+	end		
 end
 
 function NazGuildRecruiter:OnEnable()
