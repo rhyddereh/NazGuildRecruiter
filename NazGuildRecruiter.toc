@@ -1,6 +1,6 @@
-## Title: |cff50a80eNazgul Guild Recruiter|r
+## Title: NazGuildRecruiter
 ## Notes: For all your recruitment spamming needs!
-## Author: Rodrick
+## Author: Gramg
 ## X-eMail: d DOT mangus AT gmail DOT com
 ## X-Website: http://guild.requiemtech.com/
 
@@ -10,7 +10,6 @@
 ## DefaultState: enabled
 ## LoadOnDemand: 0
 ## SavedVariables: NazGuildRecruiterDB
-## SavedVariablesPerCharacter: NazGuildRecruiterDBPC
 ## OptionalDeps: Ace2, RollCall-1.0, LibBabbleDewdropLib, LibBabble-Zone-3.0
 ## X-Embeds: Ace2, RollCall-1.0, TouristLib, DewdropLib, LibBabble-Zone-3.0
 ## X-Category: Guild

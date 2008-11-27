@@ -55,9 +55,9 @@ local options = {
 								end
 							end,
 			func = 	function()
-							NazGuildRecruiter:Print(gsub(L["NazGuildRecruiter is now attuned to GUILDNAME"], 'GUILDNAME', NazGuildRecruiter.db.profile.guild, 1))
 							NazGuildRecruiter.db.profile.guild = NazGuildRecruiter:GetGuildName()
-							if not NazGuildRecruiter:IsActive() then 
+							NazGuildRecruiter:Print(string.format(L["NazGuildRecruiter is now attuned to %s"], NazGuildRecruiter.db.profile.guild))
+							if not active then 
 								NazGuildRecruiter:ToggleActive(true)
 								NazGuildRecruiter:Print(L["Turning myself on"])
 							end
@@ -76,7 +76,7 @@ local options = {
 							else
                                 currentzone = ZR[GetZoneText()]
                             end
-							NazGuildRecruiter:Print(gsub(L["The last time spammed in this zone was NUMMINUTES minutes ago"], "NUMMINUTES", tostring(tonumber(NazGuildRecruiter:GetTime()) - (tonumber(NazGuildRecruiter.db.profile.lasttime[currentzone]) or 0))))
+							NazGuildRecruiter:Print(string.format(L["The last time spammed in this zone was %s minutes ago"], tostring(tonumber(NazGuildRecruiter:GetTime()) - (tonumber(NazGuildRecruiter.db.profile.lasttime[currentzone]) or 0))))
 						end,
 			order = 1,
 		},
@@ -294,10 +294,6 @@ function NazGuildRecruiter:ToggleActive(state)
 	active = state
 end
 
-function NazGuildRecruiter:IsActive()
-	return active
-end
-
 --Reusable Functions
 
 --[[----------------------------------------------------------------------------------
@@ -446,20 +442,21 @@ end
 	* Sets up the addon, called on Enable
 ------------------------------------------------------------------------------------]]
 function NazGuildRecruiter:OnInitialize()
-    self.db = LibStub("AceDB-3.0"):New("NazScroogeDB", {}, "Default")
+    self.db = LibStub("AceDB-3.0"):New("NazGuildRecruiterDB", {}, "Default")
     self.db:RegisterDefaults({
         profile = {
-            message = "Nazg\195\186l is currently recruiting all levels and classes! We are a casual leveling guild just looking to have a good time and get to that almighty level 70. Whisper me for more info, or an invite!",
+            message = "Nazg\195\186l is currently recruiting all levels and classes! We are a casual leveling guild just looking to have a good time and get to that almighty level 80. Whisper me for more info, or an invite!",
             between = 30,
             cityspam = true,
             zonespam = true,
-            maxlevel = 55,
+            maxlevel = 80,
             minlevel = 1,
             lasttime = {},
             motdcycle = true,
             cycletime = 45,
             lastcycletime = 0,
             guild = "None",
+			active = true,
         },
     })
 	if not self.version then self.version = tonumber(GetAddOnMetadata("NazGuildRecruiter", "Version")) end --pull version from toc
@@ -469,6 +466,7 @@ function NazGuildRecruiter:OnInitialize()
 		self.db.profile.lasttime = {} --guess it was for the old version, reset the data then since the timestamps have changed
 		self.db.profile.version = self.version --record the version so it'll pass the next check
 	end		
+	active = self.db.profile.active
 end
 
 function NazGuildRecruiter:OnEnable()
@@ -485,7 +483,7 @@ function NazGuildRecruiter:OnEnable()
 	end
 	
 	if self:GetGuildName() ~= self.db.profile.guild then --You are attempting to use this addon attuned to a different guild
-		self:Print(gsub(gsub(L["Shutting myself off since you are in nowguild and attuned to differentguild.  To attune to your current guild please type \"/ngr attune\""], "nowguild", self:GetGuildName()), "differentguild", NazGuildRecruiter.db.profile.guild))
+		self:Print(string.format(L["Shutting myself off since you are in %s and attuned to %s.  To attune to your current guild please type \"/ngr attune\""], self:GetGuildName(), NazGuildRecruiter.db.profile.guild))
 		self:ToggleActive(false) -- turn yourself off
 		return
 	end
