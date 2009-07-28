@@ -3,14 +3,12 @@
 	
 	TODO:  Respond with a WHISPER to a "who's online, are you enabled, and what guild are you attuned to?"  Preferrably even if disabled, this will help guild leaders test it for their members.
             Add Ability_Warrior_RallyingCry as the LDB icon
-            Ace2 -> Ace3/LibStub
 ------------------------------------------------------------------------------------]]
 
 local L = LibStub("AceLocale-3.0"):GetLocale("NazGuildRecruiter")
 local ZBZ = LibStub("LibBabble-Zone-3.0")
 local Z = ZBZ:GetLookupTable()
 local ZR = ZBZ:GetReverseLookupTable()
-local dewdrop = AceLibrary("Dewdrop-2.0")
 
 local city = {}
 local active
@@ -39,20 +37,23 @@ local function IsCity()
 end
 
 local options = { 
-    type='group',
+	name='NazGuildRecruiter',
+    handler = NazGuildRecruiter,
+    type = 'group',
+    childGroups = "tab",
     args = {
 		attune = {
 			type = 'execute',
 			name = L["Attune"],
 			desc = L["Attune NazGuildRecruiter to your current guild."],
-			disabled = function()
+			disabled = function(info)
 								if NazGuildRecruiter:GetGuildName() ~= NazGuildRecruiter.db.profile.guild then --not attuned to your current guild
 									return false
 								else
 									return true
 								end
 							end,
-			func = 	function()
+			func = 	function(info)
 							NazGuildRecruiter.db.profile.guild = NazGuildRecruiter:GetGuildName()
 							NazGuildRecruiter:Print(string.format(L["NazGuildRecruiter is now attuned to %s"], NazGuildRecruiter.db.profile.guild))
 							if not active then 
@@ -67,7 +68,7 @@ local options = {
 			type = 'execute',
 			name = L["Last time spammed in zone"],
 			desc = L["Spit out to chat the last time someone in this guild has spammed in this zone"],
-			func = 	function()
+			func = 	function(info)
 							local currentzone
 							if IsCity() then --This zone is a city so treat all cities as one
 								currentzone = "City"
@@ -80,13 +81,15 @@ local options = {
 		},
 		msg = {
             type = 'text',
+            multiline = true,
+            width = "full",
             name = L["Message"],
             desc = L["The message text to be displayed"],
             usage = L["<Your message here>"],
-            get = function()
+            get = function()info
 						return NazGuildRecruiter.db.profile.message
 					end,
-            set = function(newValue)
+            set = function(info, newValue)
 						NazGuildRecruiter.db.profile.message = newValue
 					end,
 			order = 5,
@@ -99,10 +102,10 @@ local options = {
 			min = 15,
 			max = 120,
 			step = 1,			
-			get = function()
+			get = function(info)
 						return NazGuildRecruiter.db.profile.between
 					end,
-			set = function(newValue)
+			set = function(info, newValue)
 						NazGuildRecruiter.db.profile.between = newValue
 					end,
 			order = 10,
@@ -111,66 +114,23 @@ local options = {
 			type = 'toggle',
 			name = L["CitySpam Enabled?"],
 			desc = L["Should I spam in cities?"],
-			get = function()
+			get = function(info)
 						return NazGuildRecruiter.db.profile.cityspam
 					end,
-			set = function(newValue)
+			set = function(info, newValue)
 						NazGuildRecruiter.db.profile.cityspam = newValue
 					end,
 			map = { [false] = L["Disabled"], [true] = L["Enabled"] },
 			order = 15,
 		},
-		motdcycle = {
-			type = 'group',
-			name = L["MOTD cycler"],
-			desc = L["Cycles into guildchat the MOTD periodically"],
-			order = 30,
-			args = {
-				toggle = {
-					type = 'toggle',
-					name = L["Enabled?"],
-					desc = L["Should I cycle the message of the day?"],
-					get = function()
-								return NazGuildRecruiter.db.profile.motdcycle
-							end,
-					set = function(newValue)
-								NazGuildRecruiter.db.profile.motdcycle = newValue
-							end,
-					map = { [false] = L["Disabled"], [true] = L["Enabled"] },
-					order = 31,
-				},
-				cycletime = {
-					type = 'range',
-					name = L["Cycle interval"],
-					desc = L["How many minutes between Spamming the message of the day in guildchat?"],
-					min = 30,
-					max = 240,
-					step = 5,			
-					disabled = function()
-										if NazGuildRecruiter.db.profile.motdcycle then --cycle
-											return false
-										else
-											return true
-										end
-									end,
-					get = function()
-								return NazGuildRecruiter.db.profile.cycletime
-							end,
-					set = function(newValue)
-								NazGuildRecruiter.db.profile.cycletime = newValue
-							end,
-					order = 32,
-				},
-			},
-		},
-		zonespam = {
+	zonespam = {
 			type = 'toggle',
 			name = L["ZoneSpam Enabled?"],
 			desc = L["Should I spam in regular zones?"],
-			get = function()
+			get = function(info)
 						return NazGuildRecruiter.db.profile.zonespam
 					end,
-			set = function(newValue)
+			set = function(info, newValue)
 						NazGuildRecruiter.db.profile.zonespam = newValue
 					end,
 			map = { [false] = L["Disabled"], [true] = L["Enabled"] },
@@ -180,7 +140,7 @@ local options = {
 			type = 'group',
 			name = L["Range of levels you are recruiting"],
 			desc = L["only applicable if zonespam is checked"],
-			disabled = function()
+			disabled = function(info)
 								if NazGuildRecruiter.db.profile.zonespam then return false end
 								return true
 							end,
@@ -194,10 +154,10 @@ local options = {
 					min = 1,
 					max = 80,
 					step = 1,			
-					get = function()
+					get = function(info)
 								return NazGuildRecruiter.db.profile.minlevel
 							end,
-					set = function(newValue)
+					set = function(info, newValue)
 								if newValue > NazGuildRecruiter.db.profile.maxlevel then
 									NazGuildRecruiter:Print(L["Cannot set a minimum level higher than the maximum"])
 								return
@@ -214,10 +174,10 @@ local options = {
 					min = 1,
 					max = 80,
 					step = 1,			
-					get = function()
+					get = function(info)
 								return NazGuildRecruiter.db.profile.maxlevel
 							end,
-					set = function(newValue)
+					set = function(info, newValue)
 								if newValue < NazGuildRecruiter.db.profile.minlevel then
 									NazGuildRecruiter:Print(L["Cannot set a maximum level lower than the minimum"])
 									return
@@ -231,13 +191,21 @@ local options = {
 	},
 }
 
-NazGuildRecruiter = AceLibrary("AceAddon-2.0"):new("AceConsole-2.0", "AceEvent-2.0", "AceComm-2.0")
-NazGuildRecruiter:RegisterChatCommand(L["Slash-Commands"], options)
-NazGuildRecruiter:SetCommPrefix("NazGuildRecruiter")
-NazGuildRecruiter:SetDefaultCommPriority("BULK")
+local function ChatCmd(input)
+	if not input or input:trim() == "" then
+		InterfaceOptionsFrame_OpenToCategory(NazGuildRecruiter.optionsframe)
+	else
+		LibStub("AceConfigCmd-3.0").HandleCommand(NazGuildRecruiter, L["Slash-Command-Short"], "NazGuildRecruiter", input:trim() ~= "help" and input or "")
+	end
+end
+
+NazGuildRecruiter = LibStub("AceAddon-3.0"):NewAddon("NazGuildRecruiter", "AceEvent-3.0", "AceConsole-3.0", "AceComm-3.0", "AceSerializer-3.0")
+NazGuildRecruiter:RegisterChatCommand(L["Slash-Command"], ChatCmd)
+NazGuildRecruiter:RegisterChatCommand(L["Slash-Command-Short"], ChatCmd)
+NazGuildRecruiter.commPrefix = "NazGuildRecruiter"
+NazGuildRecruiter.prior = "BULK"
 
 local tabfinal = {}
-local motdcount
 local zones = NGR_Zones
 
 local t1
@@ -418,23 +386,6 @@ end
 
 --[[----------------------------------------------------------------------------------
 	Notes:
-	* This checks to see if it's been cycletime from lastcycletime, if so
-		cycle and record lastcycletime.
-------------------------------------------------------------------------------------]]
-function NazGuildRecruiter:motdcycler()
-	if self.db.profile.motdcycle and CanEditMOTD()  then --If you cannot edit the MOTD or have disabled the option, then do nothing silly
-		local now = self:GetTime() -- save the timestamp for now so we can use it 2x later
-		if self.db.profile.lastcycletime - now > 3000 then self.db.profile.lastcycletime = 0 end --check for very bad data
-        if (self.db.profile.lastcycletime + self.db.profile.cycletime) <= now then -- It's been long enough so cycle silly
-			self:SendCommMessage("GUILD", self.version, "cycled", "",self.db.profile.lastcycletime) -- let the world know I'm cycling
-			GuildSetMOTD(GetGuildRosterMOTD()) -- set it to the same as it was
-			self.db.profile.lastcycletime = now -- record the new time
-		end
-	end
-end
-
---[[----------------------------------------------------------------------------------
-	Notes:
 	* Returns the server time in the minutes since newyears
 	Inputs:
 		* none
@@ -464,16 +415,13 @@ function NazGuildRecruiter:OnInitialize()
             maxlevel = 80,
             minlevel = 1,
             lasttime = {},
-            motdcycle = true,
-            cycletime = 45,
-            lastcycletime = 0,
             guild = "None",
 			active = true,
         },
     })
 	if not self.version then self.version = tonumber(GetAddOnMetadata("NazGuildRecruiter", "Version")) end --pull version from toc
-	if not self.revision then self.revision = tonumber(GetAddOnMetadata("NazGuildRecruiter", "Revision")) end --pull revision from toc
-    CreateUIOptionsFrame('NazGuildRecruiter')
+    self.optionsframe = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("NazGuildRecruiter", "NazGuildRecruiter") -- Add the options to Bliz's new section in interface
+	LibStub("AceConfig-3.0"):RegisterOptionsTable("NazGuildRecruiter", options) -- Register the chat commands to use our options table
 	if (self.db.profile.version ~= self.version) then --was this data not written with this version in mind?
 		self.db.profile.lasttime = {} --guess it was for the old version, reset the data then since the timestamps have changed
 		self.db.profile.version = self.version --record the version so it'll pass the next check
@@ -483,7 +431,6 @@ end
 
 function NazGuildRecruiter:OnEnable()
 	GuildRoster() --needed so IsMemberOnline returns real data
-    motdcount = 0
 	if IsInGuild() then else -- make sure you are in a guild
 		self:Print(L["You are not in a guild, disabling myself"])
 		self:ToggleActive(false) -- shut yourself off if not
@@ -518,10 +465,10 @@ function NazGuildRecruiter:RegisterMyself()
 	self:RegisterComm(self.commPrefix, "GUILD", "ReceiveGuildMessage") --Register to receive guild addon messages
 	self:RegisterComm(self.commPrefix, "WHISPER", "ReceiveWhisperMessage") --Register to receive whisper addon messages
 	if CanGuildInvite() then --If you are an recruiter
-		self:SendCommMessage("GUILD", self.version, "Rctr") --Broadcast that you are online
+		self:SendCommMessage(self.commPrefix, self:Serialize(self.version, "Rctr"), "GUILD", _, self.prior) --Broadcast that you are online
 		self:GetList() -- Get the current list from someone else if anyone is online
 	else
-		self:SendCommMessage("GUILD", self.version, "Who") --Broadcast the request for online recruiters
+		self:SendCommMessage(self.commPrefix, self:Serialize(self.version, "Who"), "GUILD", _, self.prior) --Broadcast the request for online recruiters
 		self:ScheduleEvent(function() --Call a timeout function
 			if #(self.rctr) == 0 then --No responses
 				self:TurnSelfOn() --Register for events and go to work!
@@ -538,7 +485,7 @@ end
 	* Gets the list of previously spammed areas if anyone is online with a list
 ------------------------------------------------------------------------------------]]
 function NazGuildRecruiter:GetList()
-	self:SendCommMessage("GUILD", self.version, "WhoOn") --ask for all online to respond
+	self:SendCommMessage(self.commPrefix, self:Serialize(self.version, "WhoOn"), "GUILD", _, self.prior) --ask for all online to respond
 	self:ScheduleEvent("NGR_TIMEOUT", function() self:Timeout() end, 10) --timeout function in 10 seconds
 end
 
@@ -551,7 +498,7 @@ function NazGuildRecruiter:Timeout()
 	    self:TurnSelfOn() --Register for events and go to work!
 	else --Got responses, pick one and ask for the list
 		local number = ceil(random(#(self.online))) --randomly pick a person who responded
-		self:SendCommMessage("WHISPER", self.online[number], self.version, "List") --ask for their copy of the list
+		self:SendCommMessage(self.commPrefix, self:Serialize(self.version, "List"), "WHISPER", self.online[number], self.prior) --ask for their copy of the list
 		self:ScheduleEvent("NGR_TIMEOUT", function() self:Timeout() end, 10) --timeout function in 10 seconds
 	end
 end
@@ -570,15 +517,16 @@ end
 		* String - zone - only used with the spammed action
 		* String - time - only used with the spammed action
 ------------------------------------------------------------------------------------]]
-function NazGuildRecruiter:ReceiveGuildMessage(prefix, sender, distribution, version, action, zone, time, ...)
+function NazGuildRecruiter:ReceiveGuildMessage(prefix, message, distribution, sender, ...)
+	version, action, zone = self:Deserialize(message)
 	if version == self.version then --version numbers match
 		if action == "Rctr" then --A recruiter came online
 			tinsert(self.rctr, 1, sender) --Put them into the list
 		elseif action == "WhoOn" then --Someone would like to know if you are online
-			self:SendCommMessage("WHISPER", sender, self.version, "Online") --respond that I am online
+			self:SendCommMessage(self.commPrefix, self:Serialize(self.version, "Online"), "WHISPER", sender, self.prior) --respond that I am online
 		elseif action ==  "Who" then --Someone would like to know if you are a recruiter
 			if CanGuildInvite() then -- you can, so respond
-				self:SendCommMessage("WHISPER", sender, self.version, "Rctr")
+				self:SendCommMessage(self.commPrefix, self:Serialize(self.version, "Rctr"), "WHISPER", sender, self.prior)
 			end
 		elseif action == "Remove" then --A recruiter went offline or AFK/DND
 			self:tremovebyval(self.rctr, sender) --remove them from your list
@@ -587,9 +535,6 @@ function NazGuildRecruiter:ReceiveGuildMessage(prefix, sender, distribution, ver
                 zone = ZR[zone]
             end
             self.db.profile.lasttime[zone] = self:GetTime() --update the timestamp in the table
-        elseif action == "cycled" then --Someone just cycled the MOTD
-			self.db.profile.lastcycletime = self:GetTime() -- record it
-		end
 	else --version numbers do not match
 		if (tonumber(version) > tonumber(self.version)) then --sending addon is with a higher version than ours
 		self:Print(L["Your version of NazGuildRecruiter is not up to date, please consider upgrading.  Disabling myself."])
@@ -609,21 +554,19 @@ end
 		* String - action - What action to be taken
 		* various - data - Data packet that comes along with the action
 ------------------------------------------------------------------------------------]]
-function NazGuildRecruiter:ReceiveWhisperMessage(prefix, sender, distribution, version, action, lasttime_data, cycle_timestamp, now, ...)
+function NazGuildRecruiter:ReceiveWhisperMessage(prefix, message, distribution, sender, ...)
+	version, action, lasttime_data, now = self:Deserialize(message)
 	if version == self.version then --version numbers match
 		if action == "Rctr" then --Recruiter has come online
 			tinsert(self.rctr, 1, sender) --Put them into the list
 		elseif action == "Online" then --Someone said they were online
 			tinsert(self.online, 1, sender) --Put them into the list
 		elseif action ==  "List" then --Someone would like your zone-time list
-			self:SendCommMessage("WHISPER", sender, self.version, "Data", self.db.profile.lasttime, self.db.profile.lastcycletime, self:GetTime()) --Send your list to the person
+			self:SendCommMessage(self.commPrefix, self:Serialize(self.version, "Data", self.db.profile.lasttime, self:GetTime()), "WHISPER", sender, self.prior) --Send your list to the person
 		elseif action == "Data" then --Someone sent you thier data
 			self:CancelScheduledEvent("NGR_TIMEOUT") --Don't timeout since we have the data now
             local diff = self:GetTime() - now --figure out how different our times are
 			self.db.profile.lasttime = self:combinetable(self.db.profile.lasttime, lasttime_data, diff) --combine the tables
-			if self.db.profile.lastcycletime < cycle_timestamp then --new cycle timestamp is newer than your old one
-				self.db.profile.lastcycletime = cycle_timestamp -- this is the last MOTD cycle time
-			end
 			self:TurnSelfOn() --Register for events and go to work!
 		end
 	else --version numbers do not match
@@ -644,7 +587,7 @@ function NazGuildRecruiter:TurnSelfOn()
 	if not self.grchannel and self.db.profile.cityspam then --don't know what the GR channel number is and am supposed to be using it. . . 
 		if IsCity() then --yup we are actually in a city . . . so that must mean we havne't joined the channel yet
 			if JoinChannelByName(L["GuildRecruitment"] , nil, ChatFrame1:GetID()) then --were we able to successfully join the channel?
-				self.grchannel = GetChannelName(L["GuildRecruitment"] .. " - City") -- get the new index
+				self.grchannel = GetChannelName(L["GuildRecruitment - City"]) -- get the new index
 			else -- too many channels
 				self:Print(L["Cannot join the GuildRecruitment channel, turning cityspam off"])
 				self.db.profile.cityspam = false
@@ -693,10 +636,6 @@ function NazGuildRecruiter:Timer()
 			end
 		end
 	end
-    if motdcount >= 9 then 
-        self:motdcycler()
-    end
-    motdcount = motdcount + 1
 end
 
 --[[----------------------------------------------------------------------------------
@@ -707,7 +646,7 @@ function NazGuildRecruiter:CHAT_MSG_CHANNEL_NOTICE(what, a, b, c, d, e, f, numbe
 	if not active then return end
 	if strsub(channel, 0, strlen(GENERAL)) == GENERAL then --changed the general channel
 		self:ScheduleEvent(function() self:Timer() end, 5) --Call the Timer even to check for spamming, etc. in 5 seconds time (otherwise it was spamming right before actually changing channel
-	elseif not self.grchannel and channel == L["GuildRecruitment"] .. " - " .. L["City"] and what == "YOU_JOINED" then --Joined the GuildRecruitment channel
+	elseif not self.grchannel and channel == L["GuildRecruitment - City"] and what == "YOU_JOINED" then --Joined the GuildRecruitment channel
 		self.grchannel = number
 	end
 end
@@ -720,7 +659,7 @@ function NazGuildRecruiter:PLAYER_FLAGS_CHANGED()
     if UnitIsAFK("player") or UnitIsDND("player") then --You went AFK or DND
 		self.afkdnd = true
 		if CanGuildInvite() then --If you are a recruiter
-			self:SendCommMessage("GUILD", self.version, "Remove") --Ask to be removed from any recruiter list
+			self:SendCommMessage(self.commPrefix, self:Serialize(self.version, "Remove"), "GUILD", _, self.prior) --Ask to be removed from any recruiter list
 		end
 	end
 end
@@ -732,7 +671,7 @@ end
 function NazGuildRecruiter:CHAT_MSG_SYSTEM(msg)
     if msg == CLEARED_AFK or msg == CLEARED_DND then --You came back from AFK or DND
 		if CanGuildInvite() then --If you are a recruiter
-			self:SendCommMessage("GUILD", self.version, "Rctr") --Let people know you are back
+			self:SendCommMessage(self.commPrefix, self:Serialize(self.version, "Rctr"), "GUILD", _, self.prior) --Let people know you are back
 		end
 		self.afkdnd = false
 	end
@@ -759,7 +698,7 @@ function NazGuildRecruiter:SpamZone(zone)
 			if not (GetZoneText() == zone or zone == "City") then return end --exit out of the function period if we aren't in the same zone again (ie just popped in and out of a zone)
 			SendChatMessage(self.db.profile.message,"CHANNEL",nil,number) --send message
 			self.db.profile.lasttime[zone] = self:GetTime() --set the timestamp to the current time
-			self:SendCommMessage("GUILD", self.version, "Recruited", zone, self.db.profile.lasttime[zone]) --Send message saying you spammed
+			self:SendCommMessage(self.commPrefix, self:Serialize(self.version, "Recruited", zone, self.db.profile.lasttime[zone]), "GUILD", _, self.prior) --Send message saying you spammed
 			return --don't check any more people
 		end
 	end
