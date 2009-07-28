@@ -10,8 +10,7 @@
 ## DefaultState: enabled
 ## LoadOnDemand: 0
 ## SavedVariables: NazGuildRecruiterDB
-## OptionalDeps: Ace2, RollCall-1.0, LibBabbleDewdropLib, LibBabble-Zone-3.0
-## X-Embeds: Ace2, RollCall-1.0, TouristLib, DewdropLib, LibBabble-Zone-3.0
+## OptionalDeps: Ace3, LibBabble-Zone-3.0
 ## X-Category: Guild
 ## X-License: GPL v2 or later
 ## LoadManagers: AddonLoader
