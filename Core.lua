@@ -4,7 +4,6 @@
 	TODO:  Respond with a WHISPER to a "who's online, are you enabled, and what guild are you attuned to?"  Preferrably even if disabled, this will help guild leaders test it for their members.
             Add Ability_Warrior_RallyingCry as the LDB icon
             Ace2 -> Ace3/LibStub
-            Remove need for RollCall
 ------------------------------------------------------------------------------------]]
 
 local L = LibStub("AceLocale-3.0"):GetLocale("NazGuildRecruiter")
@@ -483,6 +482,7 @@ function NazGuildRecruiter:OnInitialize()
 end
 
 function NazGuildRecruiter:OnEnable()
+	GuildRoster() --needed so IsMemberOnline returns real data
     motdcount = 0
 	if IsInGuild() then else -- make sure you are in a guild
 		self:Print(L["You are not in a guild, disabling myself"])
