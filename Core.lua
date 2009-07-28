@@ -11,7 +11,6 @@ local L = LibStub("AceLocale-3.0"):GetLocale("NazGuildRecruiter")
 local ZBZ = LibStub("LibBabble-Zone-3.0")
 local Z = ZBZ:GetLookupTable()
 local ZR = ZBZ:GetReverseLookupTable()
-local rollcall = AceLibrary("RollCall-1.0")
 local dewdrop = AceLibrary("Dewdrop-2.0")
 
 local city = {}
@@ -23,9 +22,9 @@ local active
 ------------------------------------------------------------------------------------]]
 local function IsCity()
     zone=GetZoneText()
-    if city[zone] == 1 then --already checked and this zone is a city
+    if city[zone] == true then --already checked and this zone is a city
         return true
-    elseif city[zone] == 0 then --already checked and this zone is not a city
+    elseif city[zone] === false then --already checked and this zone is not a city
         return false
     else
         local channels = { EnumerateServerChannels() }
@@ -35,7 +34,7 @@ local function IsCity()
                 return true
             end
         end --if we got through all the channels then we aren't in a city so . . .
-        city[zone] = 0
+        city[zone] = false
         return false
     end
 end
@@ -406,6 +405,20 @@ end
 
 --[[----------------------------------------------------------------------------------
 	Notes:
+	* Returns true if name is online, false if offline
+------------------------------------------------------------------------------------]]
+function NazGuildRecruiter:IsMemberOnline(name)
+	name = string.lower(name)
+	for i = 1,GetNumGuildMembers(false) do -- for each person in the guild online list
+		if string.lower((GetGuildRosterInfo(i))) == name then --see if it's our name
+			return true
+		end
+	end
+	return false --not in list so return false
+end
+
+--[[----------------------------------------------------------------------------------
+	Notes:
 	* This checks to see if it's been cycletime from lastcycletime, if so
 		cycle and record lastcycletime.
 ------------------------------------------------------------------------------------]]
@@ -735,7 +748,7 @@ function NazGuildRecruiter:SpamZone(zone)
 	if not active then return end
 	if not self:Recommended() and zone ~= "City" then return end --if this isn't the right level zone do nothing
 	for s, name in pairs(NazGuildRecruiter.rctr) do --Iterate through the recruiter list and check for people who are offline
-		if rollcall:IsMemberOnline(name) then --Yes this one is online
+		if self:IsMemberOnline(name) then --Yes this one is online
 			if zone == "City" then --We are in a city so spam the GuildRecruitment channel instead
 				number = self.grchannel
 			else --OK not a city so . . . 
