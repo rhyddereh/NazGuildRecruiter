@@ -11,7 +11,7 @@ local Z = ZBZ:GetLookupTable()
 local ZR = ZBZ:GetReverseLookupTable()
 
 local city = {}
-local active
+local active, timerhandle
 
 --[[----------------------------------------------------------------------------------
 	Notes:
@@ -199,7 +199,7 @@ local function ChatCmd(input)
 	end
 end
 
-NazGuildRecruiter = LibStub("AceAddon-3.0"):NewAddon("NazGuildRecruiter", "AceEvent-3.0", "AceConsole-3.0", "AceComm-3.0", "AceSerializer-3.0")
+NazGuildRecruiter = LibStub("AceAddon-3.0"):NewAddon("NazGuildRecruiter", "AceTimer-3.0", "AceEvent-3.0", "AceConsole-3.0", "AceComm-3.0", "AceSerializer-3.0")
 NazGuildRecruiter:RegisterChatCommand(L["Slash-Command"], ChatCmd)
 NazGuildRecruiter:RegisterChatCommand(L["Slash-Command-Short"], ChatCmd)
 NazGuildRecruiter.commPrefix = "NazGuildRecruiter"
@@ -438,7 +438,7 @@ function NazGuildRecruiter:OnEnable()
 	end
 	
 	if self:GetGuildName() == nil then --too soon to check for right guild (returns nil once and a while for a short time) so try again in .1 sec
-		self:ScheduleEvent("Enable", function () self:OnEnable() end, .1)
+		self:ScheduleTimer("OnEnable", .1)
 		return
 	end
 	
@@ -469,7 +469,7 @@ function NazGuildRecruiter:RegisterMyself()
 		self:GetList() -- Get the current list from someone else if anyone is online
 	else
 		self:SendCommMessage(self.commPrefix, self:Serialize(self.version, "Who"), "GUILD", _, self.prior) --Broadcast the request for online recruiters
-		self:ScheduleEvent(function() --Call a timeout function
+		self:ScheduleTimer(function() --Call a timeout function
 			if #(self.rctr) == 0 then --No responses
 				self:TurnSelfOn() --Register for events and go to work!
 				return
@@ -486,7 +486,7 @@ end
 ------------------------------------------------------------------------------------]]
 function NazGuildRecruiter:GetList()
 	self:SendCommMessage(self.commPrefix, self:Serialize(self.version, "WhoOn"), "GUILD", _, self.prior) --ask for all online to respond
-	self:ScheduleEvent("NGR_TIMEOUT", function() self:Timeout() end, 10) --timeout function in 10 seconds
+	self:ScheduleTimer("Timeout", 10) --timeout function in 10 seconds
 end
 
 --[[----------------------------------------------------------------------------------
@@ -499,7 +499,7 @@ function NazGuildRecruiter:Timeout()
 	else --Got responses, pick one and ask for the list
 		local number = ceil(random(#(self.online))) --randomly pick a person who responded
 		self:SendCommMessage(self.commPrefix, self:Serialize(self.version, "List"), "WHISPER", self.online[number], self.prior) --ask for their copy of the list
-		self:ScheduleEvent("NGR_TIMEOUT", function() self:Timeout() end, 10) --timeout function in 10 seconds
+		timerhandle = self:ScheduleTimer("Timeout", 10) --timeout function in 10 seconds
 	end
 end
 
@@ -564,7 +564,7 @@ function NazGuildRecruiter:ReceiveWhisperMessage(prefix, message, distribution, 
 		elseif action ==  "List" then --Someone would like your zone-time list
 			self:SendCommMessage(self.commPrefix, self:Serialize(self.version, "Data", self.db.profile.lasttime, self:GetTime()), "WHISPER", sender, self.prior) --Send your list to the person
 		elseif action == "Data" then --Someone sent you thier data
-			self:CancelScheduledEvent("NGR_TIMEOUT") --Don't timeout since we have the data now
+			self:CancelScheduledEvent(timerhandle) --Don't timeout since we have the data now
             local diff = self:GetTime() - now --figure out how different our times are
 			self.db.profile.lasttime = self:combinetable(self.db.profile.lasttime, lasttime_data, diff) --combine the tables
 			self:TurnSelfOn() --Register for events and go to work!
@@ -611,7 +611,7 @@ function NazGuildRecruiter:TurnSelfOn()
 	if CanGuildInvite() then --If you are an recruiter
 		tinsert(self.rctr, 1, (UnitName("player"))) --Add yourself to the recruiter list
 	end
-	self:ScheduleRepeatingEvent("NGR_TIMERFUNCTION", function() self:Timer()  end, 30) --Called every 30 seconds
+	self:ScheduleRepeatingTimer("Timer", F30) --Called every 30 seconds
 	self:Print(L["Setup complete, Ready to start recruiting"])
 end
 
@@ -645,7 +645,7 @@ end
 function NazGuildRecruiter:CHAT_MSG_CHANNEL_NOTICE(what, a, b, c, d, e, f, number, channel)
 	if not active then return end
 	if strsub(channel, 0, strlen(GENERAL)) == GENERAL then --changed the general channel
-		self:ScheduleEvent(function() self:Timer() end, 5) --Call the Timer even to check for spamming, etc. in 5 seconds time (otherwise it was spamming right before actually changing channel
+		self:ScheduleTimer("Timer", 5) --Call the Timer even to check for spamming, etc. in 5 seconds time (otherwise it was spamming right before actually changing channel
 	elseif not self.grchannel and channel == L["GuildRecruitment - City"] and what == "YOU_JOINED" then --Joined the GuildRecruitment channel
 		self.grchannel = number
 	end

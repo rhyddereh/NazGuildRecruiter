@@ -11,6 +11,7 @@
 <Include file="Libs\AceLocale-3.0\AceLocale-3.0.xml"/>
 <Include file="Libs\AceComm-3.0\AceComm-3.0.xml"/>
 <Include file="Libs\AceSerialize-3.0\AceSerializer-3.0.xml"/>
+<Include file="Libs\AceTimer-3.0\AceTimer-3.0"/>
 
 <Include file="libs\LibBabble-Zone-3.0\lib.xml" />
 
