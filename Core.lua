@@ -19,9 +19,9 @@ local active, timerhandle
 ------------------------------------------------------------------------------------]]
 local function IsCity()
     zone=GetZoneText()
-    if city[zone] == true then --already checked and this zone is a city
+    if city[zone] == 1 then --already checked and this zone is a city
         return true
-    elseif city[zone] === false then --already checked and this zone is not a city
+    elseif city[zone] == 0 then --already checked and this zone is not a city
         return false
     else
         local channels = { EnumerateServerChannels() }
@@ -31,7 +31,7 @@ local function IsCity()
                 return true
             end
         end --if we got through all the channels then we aren't in a city so . . .
-        city[zone] = false
+        city[zone] = 0
         return false
     end
 end
