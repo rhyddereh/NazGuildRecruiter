@@ -120,7 +120,6 @@ local options = {
 			set = function(info, newValue)
 						NazGuildRecruiter.db.profile.cityspam = newValue
 					end,
-			map = { [false] = L["Disabled"], [true] = L["Enabled"] },
 			order = 15,
 		},
 	zonespam = {
@@ -133,7 +132,6 @@ local options = {
 			set = function(info, newValue)
 						NazGuildRecruiter.db.profile.zonespam = newValue
 					end,
-			map = { [false] = L["Disabled"], [true] = L["Enabled"] },
 			order = 20,
 		},
 		levels = {
