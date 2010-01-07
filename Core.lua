@@ -86,7 +86,7 @@ local options = {
             name = L["Message"],
             desc = L["The message text to be displayed"],
             usage = L["<Your message here>"],
-            get = function()info
+            get = function(info)
 						return NazGuildRecruiter.db.profile.message
 					end,
             set = function(info, newValue)
@@ -535,6 +535,7 @@ function NazGuildRecruiter:ReceiveGuildMessage(prefix, message, distribution, se
                 zone = ZR[zone]
             end
             self.db.profile.lasttime[zone] = self:GetTime() --update the timestamp in the table
+		end
 	else --version numbers do not match
 		if (tonumber(version) > tonumber(self.version)) then --sending addon is with a higher version than ours
 		self:Print(L["Your version of NazGuildRecruiter is not up to date, please consider upgrading.  Disabling myself."])
