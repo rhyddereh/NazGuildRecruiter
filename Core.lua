@@ -80,7 +80,7 @@ local options = {
 			order = 1,
 		},
 		msg = {
-            type = 'text',
+            type = 'input',
             multiline = true,
             width = "full",
             name = L["Message"],
@@ -98,7 +98,6 @@ local options = {
 			type = 'range',
 			name = L["Interval"],
 			desc = L["The amount of minutes between spammings in a particular location"],
-			usage = L["<minutes here>"],
 			min = 15,
 			max = 120,
 			step = 1,			
@@ -148,7 +147,6 @@ local options = {
 					type = 'range',
 					name = L["Minimum"],
 					desc = L["The minimum level of people you are looking for (used when zonespamming so you don't spam the wrong zone)"],
-					usage = L["<minumum level>"],
 					min = 1,
 					max = 80,
 					step = 1,			
@@ -168,7 +166,6 @@ local options = {
 					type = 'range',
 					name = L["Maximum"],
 					desc = L["The maximum level of people you are looking for (used when zonespamming so you don't spam the wrong zone)"],
-					usage = L["<maximum level>"],
 					min = 1,
 					max = 80,
 					step = 1,			
@@ -460,13 +457,13 @@ end
 	* Registers yourself with the others running the addon and recieves the time tables, etc
 ------------------------------------------------------------------------------------]]
 function NazGuildRecruiter:RegisterMyself()
-	self:RegisterComm(self.commPrefix, "GUILD", "ReceiveGuildMessage") --Register to receive guild addon messages
-	self:RegisterComm(self.commPrefix, "WHISPER", "ReceiveWhisperMessage") --Register to receive whisper addon messages
+	self:RegisterComm(self.commPrefix .. '_GUILD',"ReceiveGuildMessage") --Register to receive guild addon messages
+	self:RegisterComm(self.commPrefix .. '_WHISPER', "ReceiveWhisperMessage") --Register to receive whisper addon messages
 	if CanGuildInvite() then --If you are an recruiter
-		self:SendCommMessage(self.commPrefix, self:Serialize(self.version, "Rctr"), "GUILD", _, self.prior) --Broadcast that you are online
+		self:SendCommMessage(self.commPrefix .. '_GUILD', self:Serialize(self.version, "Rctr"), "GUILD", _, self.prior) --Broadcast that you are online
 		self:GetList() -- Get the current list from someone else if anyone is online
 	else
-		self:SendCommMessage(self.commPrefix, self:Serialize(self.version, "Who"), "GUILD", _, self.prior) --Broadcast the request for online recruiters
+		self:SendCommMessage(self.commPrefix .. '_GUILD', self:Serialize(self.version, "Who"), "GUILD", _, self.prior) --Broadcast the request for online recruiters
 		self:ScheduleTimer(function() --Call a timeout function
 			if #(self.rctr) == 0 then --No responses
 				self:TurnSelfOn() --Register for events and go to work!
@@ -483,7 +480,7 @@ end
 	* Gets the list of previously spammed areas if anyone is online with a list
 ------------------------------------------------------------------------------------]]
 function NazGuildRecruiter:GetList()
-	self:SendCommMessage(self.commPrefix, self:Serialize(self.version, "WhoOn"), "GUILD", _, self.prior) --ask for all online to respond
+	self:SendCommMessage(self.commPrefix .. '_GUILD', self:Serialize(self.version, "WhoOn"), "GUILD", _, self.prior) --ask for all online to respond
 	self:ScheduleTimer("Timeout", 10) --timeout function in 10 seconds
 end
 
@@ -496,7 +493,7 @@ function NazGuildRecruiter:Timeout()
 	    self:TurnSelfOn() --Register for events and go to work!
 	else --Got responses, pick one and ask for the list
 		local number = ceil(random(#(self.online))) --randomly pick a person who responded
-		self:SendCommMessage(self.commPrefix, self:Serialize(self.version, "List"), "WHISPER", self.online[number], self.prior) --ask for their copy of the list
+		self:SendCommMessage(self.commPrefix .. '_WHISPER', self:Serialize(self.version, "List"), "WHISPER", self.online[number], self.prior) --ask for their copy of the list
 		timerhandle = self:ScheduleTimer("Timeout", 10) --timeout function in 10 seconds
 	end
 end
@@ -521,10 +518,10 @@ function NazGuildRecruiter:ReceiveGuildMessage(prefix, message, distribution, se
 		if action == "Rctr" then --A recruiter came online
 			tinsert(self.rctr, 1, sender) --Put them into the list
 		elseif action == "WhoOn" then --Someone would like to know if you are online
-			self:SendCommMessage(self.commPrefix, self:Serialize(self.version, "Online"), "WHISPER", sender, self.prior) --respond that I am online
+			self:SendCommMessage(self.commPrefix .. '_WHISPER', self:Serialize(self.version, "Online"), "WHISPER", sender, self.prior) --respond that I am online
 		elseif action ==  "Who" then --Someone would like to know if you are a recruiter
 			if CanGuildInvite() then -- you can, so respond
-				self:SendCommMessage(self.commPrefix, self:Serialize(self.version, "Rctr"), "WHISPER", sender, self.prior)
+				self:SendCommMessage(self.commPrefix .. '_WHISPER', self:Serialize(self.version, "Rctr"), "WHISPER", sender, self.prior)
 			end
 		elseif action == "Remove" then --A recruiter went offline or AFK/DND
 			self:tremovebyval(self.rctr, sender) --remove them from your list
@@ -561,7 +558,7 @@ function NazGuildRecruiter:ReceiveWhisperMessage(prefix, message, distribution, 
 		elseif action == "Online" then --Someone said they were online
 			tinsert(self.online, 1, sender) --Put them into the list
 		elseif action ==  "List" then --Someone would like your zone-time list
-			self:SendCommMessage(self.commPrefix, self:Serialize(self.version, "Data", self.db.profile.lasttime, self:GetTime()), "WHISPER", sender, self.prior) --Send your list to the person
+			self:SendCommMessage(self.commPrefix .. '_WHISPER', self:Serialize(self.version, "Data", self.db.profile.lasttime, self:GetTime()), "WHISPER", sender, self.prior) --Send your list to the person
 		elseif action == "Data" then --Someone sent you thier data
 			self:CancelScheduledEvent(timerhandle) --Don't timeout since we have the data now
             local diff = self:GetTime() - now --figure out how different our times are
@@ -658,7 +655,7 @@ function NazGuildRecruiter:PLAYER_FLAGS_CHANGED()
     if UnitIsAFK("player") or UnitIsDND("player") then --You went AFK or DND
 		self.afkdnd = true
 		if CanGuildInvite() then --If you are a recruiter
-			self:SendCommMessage(self.commPrefix, self:Serialize(self.version, "Remove"), "GUILD", _, self.prior) --Ask to be removed from any recruiter list
+			self:SendCommMessage(self.commPrefix .. '_GUILD', self:Serialize(self.version, "Remove"), "GUILD", _, self.prior) --Ask to be removed from any recruiter list
 		end
 	end
 end
@@ -670,7 +667,7 @@ end
 function NazGuildRecruiter:CHAT_MSG_SYSTEM(msg)
     if msg == CLEARED_AFK or msg == CLEARED_DND then --You came back from AFK or DND
 		if CanGuildInvite() then --If you are a recruiter
-			self:SendCommMessage(self.commPrefix, self:Serialize(self.version, "Rctr"), "GUILD", _, self.prior) --Let people know you are back
+			self:SendCommMessage(self.commPrefix .. '_GUILD', self:Serialize(self.version, "Rctr"), "GUILD", _, self.prior) --Let people know you are back
 		end
 		self.afkdnd = false
 	end
@@ -697,7 +694,7 @@ function NazGuildRecruiter:SpamZone(zone)
 			if not (GetZoneText() == zone or zone == "City") then return end --exit out of the function period if we aren't in the same zone again (ie just popped in and out of a zone)
 			SendChatMessage(self.db.profile.message,"CHANNEL",nil,number) --send message
 			self.db.profile.lasttime[zone] = self:GetTime() --set the timestamp to the current time
-			self:SendCommMessage(self.commPrefix, self:Serialize(self.version, "Recruited", zone, self.db.profile.lasttime[zone]), "GUILD", _, self.prior) --Send message saying you spammed
+			self:SendCommMessage(self.commPrefix .. '_GUILD', self:Serialize(self.version, "Recruited", zone, self.db.profile.lasttime[zone]), "GUILD", _, self.prior) --Send message saying you spammed
 			return --don't check any more people
 		end
 	end
