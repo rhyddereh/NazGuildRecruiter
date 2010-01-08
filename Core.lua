@@ -532,7 +532,7 @@ function NazGuildRecruiter:ReceiveGuildMessage(prefix, message, distribution, se
             self.db.profile.lasttime[zone] = self:GetTime() --update the timestamp in the table
 		end
 	else --version numbers do not match
-		if (tonumber(version) > tonumber(self.version)) then --sending addon is with a higher version than ours
+		if tonumber(version) and (tonumber(version) > tonumber(self.version)) then --sending addon is with a higher version than ours
 		self:Print(L["Your version of NazGuildRecruiter is not up to date, please consider upgrading.  Disabling myself."])
 		self:ToggleActive(false) -- turn yourself off
 		end --if yours is the higher version do nothing (no else statement)
