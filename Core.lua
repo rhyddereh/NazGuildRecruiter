@@ -460,10 +460,10 @@ function NazGuildRecruiter:RegisterMyself()
 	self:RegisterComm(self.commPrefix .. '_GUILD',"ReceiveGuildMessage") --Register to receive guild addon messages
 	self:RegisterComm(self.commPrefix .. '_WHISPER', "ReceiveWhisperMessage") --Register to receive whisper addon messages
 	if CanGuildInvite() then --If you are an recruiter
-		self:SendCommMessage(self.commPrefix .. '_GUILD', self:Serialize(self.version, "Rctr"), "GUILD", _, self.prior) --Broadcast that you are online
+		self:SendCommMessage(self.commPrefix .. '_GUILD', self:Serialize(self.version, "Rctr"), "GUILD", nil, self.prior) --Broadcast that you are online
 		self:GetList() -- Get the current list from someone else if anyone is online
 	else
-		self:SendCommMessage(self.commPrefix .. '_GUILD', self:Serialize(self.version, "Who"), "GUILD", _, self.prior) --Broadcast the request for online recruiters
+		self:SendCommMessage(self.commPrefix .. '_GUILD', self:Serialize(self.version, "Who"), "GUILD", nil, self.prior) --Broadcast the request for online recruiters
 		self:ScheduleTimer(function() --Call a timeout function
 			if #(self.rctr) == 0 then --No responses
 				self:TurnSelfOn() --Register for events and go to work!
@@ -480,7 +480,7 @@ end
 	* Gets the list of previously spammed areas if anyone is online with a list
 ------------------------------------------------------------------------------------]]
 function NazGuildRecruiter:GetList()
-	self:SendCommMessage(self.commPrefix .. '_GUILD', self:Serialize(self.version, "WhoOn"), "GUILD", _, self.prior) --ask for all online to respond
+	self:SendCommMessage(self.commPrefix .. '_GUILD', self:Serialize(self.version, "WhoOn"), "GUILD", nil, self.prior) --ask for all online to respond
 	self:ScheduleTimer("Timeout", 10) --timeout function in 10 seconds
 end
 
@@ -655,7 +655,7 @@ function NazGuildRecruiter:PLAYER_FLAGS_CHANGED()
     if UnitIsAFK("player") or UnitIsDND("player") then --You went AFK or DND
 		self.afkdnd = true
 		if CanGuildInvite() then --If you are a recruiter
-			self:SendCommMessage(self.commPrefix .. '_GUILD', self:Serialize(self.version, "Remove"), "GUILD", _, self.prior) --Ask to be removed from any recruiter list
+			self:SendCommMessage(self.commPrefix .. '_GUILD', self:Serialize(self.version, "Remove"), "GUILD", nil, self.prior) --Ask to be removed from any recruiter list
 		end
 	end
 end
@@ -667,7 +667,7 @@ end
 function NazGuildRecruiter:CHAT_MSG_SYSTEM(msg)
     if msg == CLEARED_AFK or msg == CLEARED_DND then --You came back from AFK or DND
 		if CanGuildInvite() then --If you are a recruiter
-			self:SendCommMessage(self.commPrefix .. '_GUILD', self:Serialize(self.version, "Rctr"), "GUILD", _, self.prior) --Let people know you are back
+			self:SendCommMessage(self.commPrefix .. '_GUILD', self:Serialize(self.version, "Rctr"), "GUILD", nil, self.prior) --Let people know you are back
 		end
 		self.afkdnd = false
 	end
@@ -694,7 +694,7 @@ function NazGuildRecruiter:SpamZone(zone)
 			if not (GetZoneText() == zone or zone == "City") then return end --exit out of the function period if we aren't in the same zone again (ie just popped in and out of a zone)
 			SendChatMessage(self.db.profile.message,"CHANNEL",nil,number) --send message
 			self.db.profile.lasttime[zone] = self:GetTime() --set the timestamp to the current time
-			self:SendCommMessage(self.commPrefix .. '_GUILD', self:Serialize(self.version, "Recruited", zone, self.db.profile.lasttime[zone]), "GUILD", _, self.prior) --Send message saying you spammed
+			self:SendCommMessage(self.commPrefix .. '_GUILD', self:Serialize(self.version, "Recruited", zone), "GUILD", nil, self.prior) --Send message saying you spammed
 			return --don't check any more people
 		end
 	end
