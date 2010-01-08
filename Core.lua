@@ -414,11 +414,11 @@ function NazGuildRecruiter:OnInitialize()
 			active = true,
         },
     })
-	if not self.version then self.version = tonumber(GetAddOnMetadata("NazGuildRecruiter", "Version")) end --pull version from toc
+	if not self.version then self.version = tonumber(GetAddOnMetadata("NazGuildRecruiter", "X-Build")) end --pull version from toc
     self.optionsframe = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("NazGuildRecruiter", "NazGuildRecruiter") -- Add the options to Bliz's new section in interface
 	LibStub("AceConfig-3.0"):RegisterOptionsTable("NazGuildRecruiter", options) -- Register the chat commands to use our options table
 	if (self.db.profile.version ~= self.version) then --was this data not written with this version in mind?
-		self.db.profile.lasttime = {} --guess it was for the old version, reset the data then since the timestamps have changed
+		self.db.profile.lasttime = {} --guess it was for the old version, reset the data then since the timestamps might have changed
 		self.db.profile.version = self.version --record the version so it'll pass the next check
 	end		
 	active = self.db.profile.active
@@ -607,7 +607,7 @@ function NazGuildRecruiter:TurnSelfOn()
 	if CanGuildInvite() then --If you are an recruiter
 		tinsert(self.rctr, 1, (UnitName("player"))) --Add yourself to the recruiter list
 	end
-	self:ScheduleRepeatingTimer("Timer", F30) --Called every 30 seconds
+	self:ScheduleRepeatingTimer("Timer", 30) --Called every 30 seconds
 	self:Print(L["Setup complete, Ready to start recruiting"])
 end
 
