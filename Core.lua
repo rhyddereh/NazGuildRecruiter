@@ -690,7 +690,7 @@ function NazGuildRecruiter:SpamZone(zone)
                 zone = ZR[zone]
 				number = self.genchannel
 			end
-			if number == 0 then return end--Don't know the channel number so don't do anything
+			if not number or number == 0 then return end--Don't know the channel number so don't do anything
 			if not (GetZoneText() == zone or zone == "City") then return end --exit out of the function period if we aren't in the same zone again (ie just popped in and out of a zone)
 			SendChatMessage(self.db.profile.message,"CHANNEL",nil,number) --send message
 			self.db.profile.lasttime[zone] = self:GetTime() --set the timestamp to the current time
