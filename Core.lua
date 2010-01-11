@@ -590,6 +590,7 @@ function NazGuildRecruiter:TurnSelfOn()
 			end
 		end
 	end
+	
 	if not self.genchannel and self.db.profile.zonespam then --don't know what the gen channel number is and am supposed to be using it . . . 
 		self.genchannel = GetChannelName(GENERAL .. " - " .. GetZoneText()) -- recheck to see if we can find the channel number again
 		if self.genchannel == 0 then -- didn't get back good data, must not be joined
@@ -685,7 +686,7 @@ function NazGuildRecruiter:SpamZone(zone)
 	for s, name in pairs(NazGuildRecruiter.rctr) do --Iterate through the recruiter list and check for people who are offline
 		if self:IsMemberOnline(name) then --Yes this one is online
 			if zone == "City" then --We are in a city so spam the GuildRecruitment channel instead
-				number = self.grchannel
+				number = self.grchannel or GetChannelName(L["GuildRecruitment - City"])
 			else --OK not a city so . . . 
                 zone = ZR[zone]
 				number = self.genchannel
