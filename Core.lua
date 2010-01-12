@@ -329,7 +329,7 @@ function NazGuildRecruiter:CheckTime(zone)
     if zone ~= "City" then
         zone = ZR[zone]
     end
-	if self.db.profile.lasttime[zone] == nil then self.db.profile.lasttime[zone] = 0 end --cannot perform arithmatic on a nil value
+	if not zone or self.db.profile.lasttime[zone] == nil then self.db.profile.lasttime[zone] = 0 end --cannot perform arithmatic on a nil value
 	local diff = self:GetTime() - self.db.profile.lasttime[zone]
 	if diff < -3000 then --It is new year YAY!
 		self.db.profile.lasttime[zone] = self:GetTime() --set the last spamming to be at midnight New Years Eve or the current time if this gets called in error
