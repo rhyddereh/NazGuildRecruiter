@@ -79,6 +79,27 @@ local options = {
 						end,
 			order = 1,
 		},
+		debugmessage = {
+			type = 'execute',
+			name = L["Debug information"],
+			desc = L["Send this information along with tickets to Curseforge please"],
+			func = 	function(info)
+							local currentzone
+							if IsCity() then --This zone is a city so treat all cities as one
+								currentzone = "City"
+							else
+                                currentzone = ZR[GetZoneText()]
+                            end
+							NazGuildRecruiter:Print(string.format(L["The last time spammed in this zone was %s minutes ago"], tostring(tonumber(NazGuildRecruiter:GetTime()) - (tonumber(NazGuildRecruiter.db.profile.lasttime[currentzone]) or 0))))
+							if CanGuildInvite() then
+								NazGuildRecruiter:Print(L["You CAN invite to guild"])
+							else
+								NazGuildRecruiter:Print(L["You can NOT invite to guild"])
+							end
+							NazGuildRecruiter:Print(string.format(L["There are %s recruiters online"], tostring(#(self.rctr))))
+						end,
+			order = 1,
+		},
 		msg = {
             type = 'input',
             multiline = true,
