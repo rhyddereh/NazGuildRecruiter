@@ -96,7 +96,7 @@ local options = {
 							else
 								NazGuildRecruiter:Print(L["You can NOT invite to guild"])
 							end
-							NazGuildRecruiter:Print(string.format(L["There are %s recruiters online"], tostring(#(self.rctr))))
+							NazGuildRecruiter:Print(string.format(L["There are %s recruiters online"], tostring(#(NazGuildRecruiter.rctr))))
 						end,
 			order = 1,
 		},
