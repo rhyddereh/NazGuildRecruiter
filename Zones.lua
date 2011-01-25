@@ -52,7 +52,7 @@ NGR_Zones[Z["Tirisfal Glades"]] = {
     high = 10,
 }
 
-NGR_Zones[Z["Lost Isles"]] = {
+NGR_Zones[Z["The Lost Isles"]] = {
     low = 5,
     high = 12,
 }
