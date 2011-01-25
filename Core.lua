@@ -188,7 +188,7 @@ local options = {
 					name = L["Maximum"],
 					desc = L["The maximum level of people you are looking for (used when zonespamming so you don't spam the wrong zone)"],
 					min = 1,
-					max = 80,
+					max = 85,
 					step = 1,			
 					get = function(info)
 								return NazGuildRecruiter.db.profile.maxlevel
