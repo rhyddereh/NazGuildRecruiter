@@ -142,7 +142,7 @@ NGR_Zones[Z["Stonetalon Mountains"]] = {
 	high = 30,
 }
 
-NGR_Zones[Z["Cape of Stranglethorn"]] = {
+NGR_Zones[Z["The Cape of Stranglethorn"]] = {
 	low = 30,
 	high = 35,
 }
@@ -152,7 +152,7 @@ NGR_Zones[Z["Desolace"]] = {
 	high = 35,
 }
 
-NGR_Zones[Z["Hinterlands"]] = {
+NGR_Zones[Z["The Hinterlands"]] = {
 	low = 30,
 	high = 35,
 }
