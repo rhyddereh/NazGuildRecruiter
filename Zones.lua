@@ -227,7 +227,7 @@ NGR_Zones[Z["Blasted Lands"]] = {
 	high = 58,
 }
 
-NGR_Zones[Z["Scarlet Enclave"]] = {
+NGR_Zones[Z["The Scarlet Enclave"]] = {
 	low = 55,
 	high = 58,
 }
@@ -332,7 +332,7 @@ NGR_Zones[Z["Icecrown"]] = {
 	high = 80,
 }
 
-NGR_Zones[Z["Storm Peaks"]] = {
+NGR_Zones[Z["The Storm Peaks"]] = {
 	low = 77,
 	high = 80,
 }
