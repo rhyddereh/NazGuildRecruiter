@@ -1,20 +1,17 @@
-## Title: NazGuildRecruiter
-## Notes: For all your recruitment spamming needs!
-## Author: Gramg
-## X-eMail: d DOT mangus AT requiemtech DOT com
-## X-Website: http://requiemtech.com/
-
 ## Interface: 40000
-## X-Build: @file-revision@
+## Title: NazGuildRecruiter
 ## Version: @project-version@
+## Revision: @project-date-integer@
+## Author: @project-author@
 ## X-Date: @project-date-iso@
+## Notes: For all your recruitment spamming needs!
+## X-Category: Guild
+## X-License: GPL v2 or later
 
 ## DefaultState: enabled
 ## LoadOnDemand: 0
 ## SavedVariables: NazGuildRecruiterDB
 ## OptionalDeps: Ace3, LibBabble-Zone-3.0
-## X-Category: Guild
-## X-License: GPL v2 or later
 ## LoadManagers: AddonLoader
 ## X-LoadOn-Guild: true
 ## X-LoadOn-Slash: /NazGuildRecruiter, /ngr
