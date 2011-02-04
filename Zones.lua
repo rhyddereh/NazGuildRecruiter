@@ -207,7 +207,7 @@ NGR_Zones[Z["Burning Steppes"]] = {
 	high = 52,
 }
 
-NGR_Zones[Z["Un'goro Crater"]] = {
+NGR_Zones[Z["Un'Goro Crater"]] = {
 	low = 50,
 	high = 55,
 }
