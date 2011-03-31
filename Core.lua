@@ -1,7 +1,10 @@
 ﻿--[[----------------------------------------------------------------------------------
 	NazGuildRecruiter Core addon
 	
-	TODO:  Respond with a WHISPER to a "who's online, are you enabled, and what guild are you attuned to?"  Preferrably even if disabled, this will help guild leaders test it for their members.
+	TODO:
+			Respond with a WHISPER to a "who's online, are you enabled, and what guild
+	are you attuned to?"  Preferrably even if disabled, this will help guild leaders
+	test it for their members.
             Add Ability_Warrior_RallyingCry as the LDB icon
 ------------------------------------------------------------------------------------]]
 
@@ -142,18 +145,30 @@ local options = {
 					end,
 			order = 15,
 		},
-	zonespam = {
-			type = 'toggle',
-			name = L["ZoneSpam Enabled?"],
-			desc = L["Should I spam in regular zones?"],
-			get = function(info)
-						return NazGuildRecruiter.db.profile.zonespam
-					end,
-			set = function(info, newValue)
-						NazGuildRecruiter.db.profile.zonespam = newValue
-					end,
-			order = 20,
-		},
+		zonespam = {
+				type = 'toggle',
+				name = L["ZoneSpam Enabled?"],
+				desc = L["Should I spam in regular zones?"],
+				get = function(info)
+							return NazGuildRecruiter.db.profile.zonespam
+						end,
+				set = function(info, newValue)
+							NazGuildRecruiter.db.profile.zonespam = newValue
+						end,
+				order = 20,
+			},
+		outpvpspam = {
+				type = 'toggle',
+				name = L["Outdoor PVP Zones Enabled?"],
+				desc = L["Should I spam in outdoor pvp zones?"],
+				get = function(info)
+							return NazGuildRecruiter.db.profile.outpvpspam
+						end,
+				set = function(info, newValue)
+							NazGuildRecruiter.db.profile.outpvpspam = newValue
+						end,
+				order = 22,
+			},
 		levels = {
 			type = 'group',
 			name = L["Range of levels you are recruiting"],
@@ -429,7 +444,8 @@ function NazGuildRecruiter:OnInitialize()
             between = 30,
             cityspam = true,
             zonespam = true,
-            maxlevel = 80,
+			outpvpspam = false
+            maxlevel = 85,
             minlevel = 1,
             lasttime = {},
             guild = "None",
@@ -639,6 +655,7 @@ end
 	* Is called every 30 seconds
 ------------------------------------------------------------------------------------]]
 function NazGuildRecruiter:Timer()
+	if UnitIsDeadOrGhost("player") then return end
 	if not active then return end
 	if self.afkdnd then return end --if afk do nothing
 	if #(self.rctr) ~= 0 then--We have recruiters in our list who are not afk or dnd
@@ -649,6 +666,7 @@ function NazGuildRecruiter:Timer()
 				if not self.db.profile.cityspam then return end --if not supposed to spam in cities, end now
 				zone = "City"
 			elseif not self.db.profile.zonespam then return --not a city, so if we aren't supposed to spam elsewhere end now
+			elseif not self.db.profile.outpvpspam and GetZonePVPInfo() == "combat" then return --in a combat zone and aren't supposed to so end now
 			end
 			if self:CheckTime(zone) then--Check to see if it has been long enough in the current zone
 				self:SpamZone(zone) --Spam man, Spam away
@@ -662,7 +680,6 @@ end
 	* This is called every time you join or leave a channel
 ------------------------------------------------------------------------------------]]
 function NazGuildRecruiter:CHAT_MSG_CHANNEL_NOTICE(what, a, b, c, d, e, f, number, channel)
-	if not active then return end
 	if strsub(channel, 0, strlen(GENERAL)) == GENERAL then --changed the general channel
 		self:ScheduleTimer("Timer", 5) --Call the Timer even to check for spamming, etc. in 5 seconds time (otherwise it was spamming right before actually changing channel
 	elseif not self.grchannel and channel == L["GuildRecruitment - City"] and what == "YOU_JOINED" then --Joined the GuildRecruitment channel
@@ -703,6 +720,7 @@ end
 		*string - zone - zone we are spamming for
 ------------------------------------------------------------------------------------]]
 function NazGuildRecruiter:SpamZone(zone)
+	if UnitIsDeadOrGhost("player") then return end
 	if not active then return end
 	if not self:Recommended() and zone ~= "City" then return end --if this isn't the right level zone do nothing
 	for s, name in pairs(NazGuildRecruiter.rctr) do --Iterate through the recruiter list and check for people who are offline
