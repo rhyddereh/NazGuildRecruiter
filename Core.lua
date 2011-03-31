@@ -440,7 +440,7 @@ function NazGuildRecruiter:OnInitialize()
     self.db = LibStub("AceDB-3.0"):New("NazGuildRecruiterDB", {}, "Default")
     self.db:RegisterDefaults({
         profile = {
-            message = "Nazg\195\186l is currently recruiting all levels and classes! We are a casual leveling guild just looking to have a good time and get to that almighty level 80. Whisper me for more info, or an invite!",
+            message = "Nazg\195\186l is currently recruiting all levels and classes! We are a casual leveling guild just looking to have a good time and get to that almighty level 85. Whisper me for more info, or an invite!",
             between = 30,
             cityspam = true,
             zonespam = true,
