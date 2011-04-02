@@ -444,7 +444,7 @@ function NazGuildRecruiter:OnInitialize()
             between = 30,
             cityspam = true,
             zonespam = true,
-			outpvpspam = false
+			outpvpspam = false,
             maxlevel = 85,
             minlevel = 1,
             lasttime = {},
