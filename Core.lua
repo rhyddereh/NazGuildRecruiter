@@ -1,12 +1,14 @@
-﻿--[[----------------------------------------------------------------------------------
+﻿--[[--------------------------------------------------------------
 	NazGuildRecruiter Core addon
 	
 	TODO:
-			Respond with a WHISPER to a "who's online, are you enabled, and what guild
-	are you attuned to?"  Preferrably even if disabled, this will help guild leaders
-	test it for their members.
-            Add Ability_Warrior_RallyingCry as the LDB icon
-------------------------------------------------------------------------------------]]
+	
+		* Respond with a WHISPER to a "who's online, are you
+        enabled, and what guild are you attuned to?" Preferrably
+        even if disabled, this will help guild leaders test it for
+        their members.
+		* Add Ability_Warrior_RallyingCry as the LDB icon
+----------------------------------------------------------------]]
 
 local L = LibStub("AceLocale-3.0"):GetLocale("NazGuildRecruiter")
 local ZBZ = LibStub("LibBabble-Zone-3.0")
@@ -16,10 +18,10 @@ local ZR = ZBZ:GetReverseLookupTable()
 local city = {}
 local active, timerhandle
 
---[[----------------------------------------------------------------------------------
+--[[--------------------------------------------------------------
 	Notes:
 	* Returns true if player is in city, false otherwise
-------------------------------------------------------------------------------------]]
+----------------------------------------------------------------]]
 local function IsCity()
     zone=GetZoneText()
     if city[zone] == 1 then --already checked and this zone is a city
@@ -293,7 +295,7 @@ end
 
 --Reusable Functions
 
---[[----------------------------------------------------------------------------------
+--[[--------------------------------------------------------------
 	Notes:
 	* Removes a table row given the row's value
 	Inputs:
@@ -301,7 +303,7 @@ end
 		*value - value to remove
 	Returns:
 	* bool - true if found, failed if not found
-------------------------------------------------------------------------------------]]
+----------------------------------------------------------------]]
 function NazGuildRecruiter:tremovebyval(tab, val)
    for k,v in pairs(tab) do
      if(v==val) then
@@ -312,28 +314,29 @@ function NazGuildRecruiter:tremovebyval(tab, val)
    return false
  end
  
- --[[----------------------------------------------------------------------------------
+--[[--------------------------------------------------------------
 	Notes:
 	* Get guild name
 	Inputs:
 		* none
 	Returns:
 	* string - your guild name
-------------------------------------------------------------------------------------]]
+----------------------------------------------------------------]]
 function NazGuildRecruiter:GetGuildName()
 	local guildName, guildRankName, guildRankIndex = GetGuildInfo("player")
 	return guildName
  end
 
- --[[----------------------------------------------------------------------------------
+--[[--------------------------------------------------------------
 	Notes:
-	*	Checks to see if the recommended zone levels are within our specified range
-		I iterate in the offchance that you have selected, for example level of 56-56
-		and the recommended levels are 50-60, this is the only way to be sure that it
-		returns true
+	* Checks to see if the recommended zone levels are within our
+	specified range and iterate in the offchance that you have
+	selected, for example level of 56-56 and the recommended 
+	levels are 50-60, this is the only way to be sure that it 
+	returns true
 	Returns:
 	* bool - true if appropriate level, failed if not
-------------------------------------------------------------------------------------]]
+----------------------------------------------------------------]]
 function NazGuildRecruiter:Recommended()
     if not zones[zone] then return false end -- return false if we have no info for the zone
 	local zone = GetZoneText()
@@ -352,14 +355,14 @@ function NazGuildRecruiter:Recommended()
     end
 end
  
---[[----------------------------------------------------------------------------------
+--[[--------------------------------------------------------------
 	Notes:
 	* Checks to see if you should spam or not based on timestamps
 	Inputs:
 		*string - zone to check for
 	Returns:
 	* bool - true if long enough, failed if not
-------------------------------------------------------------------------------------]]
+----------------------------------------------------------------]]
 function NazGuildRecruiter:CheckTime(zone)
 	if type(self.db.profile.lasttime) ~= "table" then self.db.profile.lasstime = {} end --fix a corrupted variable from another user
     if zone ~= "City" then
@@ -376,10 +379,10 @@ function NazGuildRecruiter:CheckTime(zone)
 	return false
  end
  
---[[----------------------------------------------------------------------------------
+--[[--------------------------------------------------------------
 	Notes:
 	* Combines two tables, returns the synthesis
-------------------------------------------------------------------------------------]]
+----------------------------------------------------------------]]
 function NazGuildRecruiter:combinetable(tab1, tab2, diff)
 	tabfinal = {}
     for zone, time in pairs(tab1) do --iterate through and adjust their diff (this is to hopefully fix different time settings mucking things up)
@@ -402,10 +405,10 @@ function NazGuildRecruiter:combinetable(tab1, tab2, diff)
 	return tabfinal
 end
 
---[[----------------------------------------------------------------------------------
+--[[--------------------------------------------------------------
 	Notes:
 	* Returns true if name is online, false if offline
-------------------------------------------------------------------------------------]]
+----------------------------------------------------------------]]
 function NazGuildRecruiter:IsMemberOnline(name)
 	name = string.lower(name)
 	for i = 1,GetNumGuildMembers(false) do -- for each person in the guild online list
@@ -416,14 +419,14 @@ function NazGuildRecruiter:IsMemberOnline(name)
 	return false --not in list so return false
 end
 
---[[----------------------------------------------------------------------------------
+--[[--------------------------------------------------------------
 	Notes:
 	* Returns the server time in the minutes since newyears
 	Inputs:
 		* none
 	Returns:
 	* string - timestamp
-------------------------------------------------------------------------------------]]
+----------------------------------------------------------------]]
 function NazGuildRecruiter:GetTime()
 	local hours,minutes = GetGameTime()
 	local _, m, d, y = CalendarGetDate()
@@ -432,10 +435,10 @@ end
 
 --Setup functions
 
---[[----------------------------------------------------------------------------------
+--[[--------------------------------------------------------------
 	Notes:
 	* Sets up the addon, called on Enable
-------------------------------------------------------------------------------------]]
+----------------------------------------------------------------]]
 function NazGuildRecruiter:OnInitialize()
     self.db = LibStub("AceDB-3.0"):New("NazGuildRecruiterDB", {}, "Default")
     self.db:RegisterDefaults({
@@ -490,10 +493,11 @@ function NazGuildRecruiter:OnEnable()
 	self:RegisterMyself() --Start the registration process
 end
 
---[[----------------------------------------------------------------------------------
+--[[--------------------------------------------------------------
 	Notes:
-	* Registers yourself with the others running the addon and recieves the time tables, etc
-------------------------------------------------------------------------------------]]
+	* Registers yourself with the others running the addon and
+	recieves the time tables, etc
+----------------------------------------------------------------]]
 function NazGuildRecruiter:RegisterMyself()
 	self:RegisterComm(self.commPrefix .. '_GUILD',"ReceiveGuildMessage") --Register to receive guild addon messages
 	self:RegisterComm(self.commPrefix .. '_WHISPER', "ReceiveWhisperMessage") --Register to receive whisper addon messages
@@ -513,19 +517,20 @@ function NazGuildRecruiter:RegisterMyself()
 	end
 end
 
---[[----------------------------------------------------------------------------------
+--[[--------------------------------------------------------------
 	Notes:
-	* Gets the list of previously spammed areas if anyone is online with a list
-------------------------------------------------------------------------------------]]
+	* Gets the list of previously spammed areas if anyone is 
+	online with a list
+----------------------------------------------------------------]]
 function NazGuildRecruiter:GetList()
 	self:SendCommMessage(self.commPrefix .. '_GUILD', self:Serialize(self.version, "WhoOn"), "GUILD", nil, self.prior) --ask for all online to respond
 	self:ScheduleTimer("Timeout", 10) --timeout function in 10 seconds
 end
 
---[[----------------------------------------------------------------------------------
+--[[--------------------------------------------------------------
 	Notes:
 	* Timeout event/function for the "WhoOn" question
-------------------------------------------------------------------------------------]]
+----------------------------------------------------------------]]
 function NazGuildRecruiter:Timeout()
 	if #(self.online) == 0 then --No responses
 	    self:TurnSelfOn() --Register for events and go to work!
@@ -538,18 +543,22 @@ end
 
 --Messaging Functions
 
---[[----------------------------------------------------------------------------------
+--[[--------------------------------------------------------------
 	Notes:
 	* Message handler for GUILD addon messages
 	Inputs: 
-		* String - prefix - Prefix sent along with the message, can be ignored since this event will not be called with the wrong prefix
+		* String - prefix - Prefix sent along with the message,
+        can be ignored since this event will not be called with
+        the wrong prefix
 		* String - sender - name of the sending person
-		* String - distribrution - distribution method, will always be GUILD since this is the only method registered
-		* Float - version - version number of the addon sending the message
+		* String - distribrution - distribution method, will
+        always be GUILD since this is the only method registered
+		* Float - version - version number of the addon sending
+        the message
 		* String - action - What action to be taken
 		* String - zone - only used with the spammed action
 		* String - time - only used with the spammed action
-------------------------------------------------------------------------------------]]
+----------------------------------------------------------------]]
 function NazGuildRecruiter:ReceiveGuildMessage(prefix, message, distribution, sender, ...)
 	version, action, zone = self:Deserialize(message)
 	if version == self.version then --version numbers match
@@ -577,17 +586,22 @@ function NazGuildRecruiter:ReceiveGuildMessage(prefix, message, distribution, se
 	end
 end
 
---[[----------------------------------------------------------------------------------
+--[[--------------------------------------------------------------
 	Notes:
 	* Message handler for WHISPER addon messages
 	Inputs: 
-		* String - prefix - Prefix sent along with the message, can be ignored since this event will not be called with the wrong prefix
+		* String - prefix - Prefix sent along with the message,
+        can be ignored since this event will not be called with
+        the wrong prefix
 		* String - sender - name of the sending person
-		* String - distribrution - distribution method, will always be WHISPER since this is the only method registered
-		* Float - version - version number of the addon sending the message
+		* String - distribrution - distribution method, will
+        always be WHISPER since this is the only method registered
+		* Float - version - version number of the addon sending
+        the message
 		* String - action - What action to be taken
-		* various - data - Data packet that comes along with the action
-------------------------------------------------------------------------------------]]
+		* various - data - Data packet that comes along with the
+        action
+----------------------------------------------------------------]]
 function NazGuildRecruiter:ReceiveWhisperMessage(prefix, message, distribution, sender, ...)
 	version, action, lasttime_data, now = self:Deserialize(message)
 	if version == self.version then --version numbers match
@@ -613,10 +627,10 @@ end
 
 --Repeating/Working functions
 
---[[----------------------------------------------------------------------------------
+--[[--------------------------------------------------------------
 	Notes:
 	* Registers for the events
-------------------------------------------------------------------------------------]]
+----------------------------------------------------------------]]
 function NazGuildRecruiter:TurnSelfOn()
 	if not self.grchannel and self.db.profile.cityspam then --don't know what the GR channel number is and am supposed to be using it. . . 
 		if IsCity() then --yup we are actually in a city . . . so that must mean we havne't joined the channel yet
@@ -650,10 +664,10 @@ function NazGuildRecruiter:TurnSelfOn()
 	self:Print(L["Setup complete, Ready to start recruiting"])
 end
 
---[[----------------------------------------------------------------------------------
+--[[--------------------------------------------------------------
 	Notes:
 	* Is called every 30 seconds
-------------------------------------------------------------------------------------]]
+----------------------------------------------------------------]]
 function NazGuildRecruiter:Timer()
 	if UnitIsDeadOrGhost("player") then return end
 	if not active then return end
@@ -675,10 +689,10 @@ function NazGuildRecruiter:Timer()
 	end
 end
 
---[[----------------------------------------------------------------------------------
+--[[--------------------------------------------------------------
 	Notes:
 	* This is called every time you join or leave a channel
-------------------------------------------------------------------------------------]]
+----------------------------------------------------------------]]
 function NazGuildRecruiter:CHAT_MSG_CHANNEL_NOTICE(what, a, b, c, d, e, f, number, channel)
 	if strsub(channel, 0, strlen(GENERAL)) == GENERAL then --changed the general channel
 		self:ScheduleTimer("Timer", 5) --Call the Timer even to check for spamming, etc. in 5 seconds time (otherwise it was spamming right before actually changing channel
@@ -687,10 +701,10 @@ function NazGuildRecruiter:CHAT_MSG_CHANNEL_NOTICE(what, a, b, c, d, e, f, numbe
 	end
 end
 
---[[----------------------------------------------------------------------------------
+--[[--------------------------------------------------------------
 	Notes:
 	* This is to check for going into AFK or DND mode
-------------------------------------------------------------------------------------]]
+----------------------------------------------------------------]]
 function NazGuildRecruiter:PLAYER_FLAGS_CHANGED()
     if UnitIsAFK("player") or UnitIsDND("player") then --You went AFK or DND
 		self.afkdnd = true
@@ -700,10 +714,10 @@ function NazGuildRecruiter:PLAYER_FLAGS_CHANGED()
 	end
 end
 
---[[----------------------------------------------------------------------------------
+--[[--------------------------------------------------------------
 	Notes:
 	* This is to check for leaving AFK or DND mode
-------------------------------------------------------------------------------------]]
+----------------------------------------------------------------]]
 function NazGuildRecruiter:CHAT_MSG_SYSTEM(msg)
     if msg == CLEARED_AFK or msg == CLEARED_DND then --You came back from AFK or DND
 		if CanGuildInvite() then --If you are a recruiter
@@ -713,12 +727,12 @@ function NazGuildRecruiter:CHAT_MSG_SYSTEM(msg)
 	end
 end
 
---[[----------------------------------------------------------------------------------
+--[[--------------------------------------------------------------
 	Notes:
 	* This is the actual spam function
 	Inputs:
 		*string - zone - zone we are spamming for
-------------------------------------------------------------------------------------]]
+----------------------------------------------------------------]]
 function NazGuildRecruiter:SpamZone(zone)
 	if UnitIsDeadOrGhost("player") then return end
 	if not active then return end
