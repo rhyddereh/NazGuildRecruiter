@@ -233,7 +233,7 @@ end
 NazGuildRecruiter = LibStub("AceAddon-3.0"):NewAddon("NazGuildRecruiter", "AceTimer-3.0", "AceEvent-3.0", "AceConsole-3.0", "AceComm-3.0", "AceSerializer-3.0")
 NazGuildRecruiter:RegisterChatCommand(L["Slash-Command"], ChatCmd)
 NazGuildRecruiter:RegisterChatCommand(L["Slash-Command-Short"], ChatCmd)
-NazGuildRecruiter.commPrefix = "NazGuildRctr"
+NazGuildRecruiter.commPrefix = "NGRctr"
 NazGuildRecruiter.prior = "BULK"
 
 local tabfinal = {}
